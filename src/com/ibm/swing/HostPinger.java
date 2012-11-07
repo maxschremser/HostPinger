@@ -51,6 +51,7 @@ public class HostPinger extends JFrame implements Runnable {
                     // try to connect to host on port 22 with a timeout of 2500 ms
                     Socket socket = new Socket();
                     socket.connect(new InetSocketAddress(host, 22), 2500);
+                    socket.close();
                 } catch (Exception e) {
                     // if timeout occurs or host is not reachable put errorIcon and repaint()
                     hashMap.put(host, 0);
