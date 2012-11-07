@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="HostPinger" basedir="." default="jar">
+    <!--
+    // Author: DI (FH) Maximilian Schremser
+    // Description: Build Script for creating the HostPinger
+    -->
+
+    <target name="clean" description="clean up">
+        <echo>Clean Environment</echo>
+        <delete dir="../classes"/>
+        <mkdir dir="../classes"/>
+    </target>
+
+    <target name="compile" description="compile sources" depends="clean">
+        <javac srcdir="../src" destdir="../classes"/>
+
+        <copy todir="../classes">
+            <fileset dir="../src">
+                <include name="**/*.png"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="jar" description="generate jar" depends="compile">
+        <jar jarfile="../lib/HostPinger.jar" basedir="../classes" includes="**/**">
+            <manifest>
+                <attribute name="Built-By" value="${user.name}"/>
+                <attribute name="Main-Class" value="com.ibm.swing.HostPinger"/>
+            </manifest>
+        </jar>
+    </target>
+</project>
