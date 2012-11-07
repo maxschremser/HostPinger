@@ -2,6 +2,7 @@ package com.ibm.swing;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.HashMap;
@@ -42,18 +43,25 @@ public class HostPinger extends JFrame implements Runnable {
     @Override
     public void run() {
         while (true) {
+            Runtime.getRuntime().gc();
             for (int i = 0; i < list.getModel().getSize(); i++) {
                 String host = list.getModel().getElementAt(i).toString();
                 // put waitIcon for startup
                 hashMap.put(host, 2);
                 list.repaint();
+                Socket socket = null;
                 try {
                     // try to connect to host on port 22 with a timeout of 2500 ms
-                    Socket socket = new Socket();
+                    socket = new Socket();
                     socket.connect(new InetSocketAddress(host, 22), 2500);
                     socket.close();
                 } catch (Exception e) {
                     // if timeout occurs or host is not reachable put errorIcon and repaint()
+                    try {
+                        if (socket != null && !socket.isClosed()) {
+                            socket.close();
+                        }
+                    } catch (IOException ioe) {}
                     hashMap.put(host, 0);
                     list.repaint();
                     continue;
