@@ -17,13 +17,12 @@ public class HostPinger extends JFrame implements Runnable {
     public HostPinger(String... hosts) throws HeadlessException {
         super("HostPinger");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setSize(256, 384);
-        setLocation(384, 256);
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         setVisible(true);
         setResizable(true);
-
         initHosts(hosts);
-
+        // place frame at right top of the screen
+        setLocation(screenSize.width - getSize().width, 0);
         new Thread(this).start();
     }
 
@@ -35,11 +34,11 @@ public class HostPinger extends JFrame implements Runnable {
         list.setBorder(BorderFactory.createLineBorder(Color.black));
         list.setCellRenderer(new HostCellRenderer());
         list.setVisible(true);
+        list.setVisibleRowCount(hosts.length);
         JScrollPane scrollPane = new JScrollPane(list);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         getContentPane().add(scrollPane);
-        setPreferredSize(new Dimension(256, 300));
         pack();
     }
 
@@ -109,13 +108,8 @@ public class HostPinger extends JFrame implements Runnable {
             setIcon(hashMap.get(host) == null || hashMap.get(host) == WAIT_ICON ? waitIcon : hashMap.get(host) == OK_ICON ? okIcon : errorIcon);
             // display Icon on the right side of the label
             setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-            if (isSelected) {
-                setBackground(list.getSelectionBackground());
-                setForeground(list.getSelectionForeground());
-            } else {
-                setBackground(list.getBackground());
-                setForeground(list.getForeground());
-            }
+            setBackground(list.getBackground());
+            setForeground(list.getForeground());
             setEnabled(list.isEnabled());
             setFont(list.getFont());
             setOpaque(true);
